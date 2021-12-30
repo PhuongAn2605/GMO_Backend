@@ -1,16 +1,20 @@
+const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
-const { update } = require("../models/User");
-const User =  require("../models/User");
+const User = require("../models/User");
+const isEmpty = require("is-empty");
 
 const getUser = async (req, res, next) => {
   let users;
   try {
     users = await User.find({});
+
+    if (isEmpty(users)) {
+      return next(
+        new HttpError("Fetching users failed, please try again!", 500)
+      );
+    }
   } catch (err) {
-    const error = new HttpError(
-      "Fetching users failed, please try again!",
-      500
-    );
+    const error = new HttpError(err.message, 500);
     return next(error);
   }
 
@@ -18,79 +22,107 @@ const getUser = async (req, res, next) => {
 };
 
 const addNewUser = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data!", 422)
+    );
+  }
   const { name, email } = req.body;
+
+  let existingUser;
+  let newUser;
+
+  try {
+    existingUser = await User.findOne({ email: email });
+
+    if (existingUser) {
+      const error = new HttpError("User exists already!", 422);
+      return next(error);
+    }
+
+    newUser = new User({
+      name,
+      email,
+    });
+
+    const saveUser = await newUser.save();
+    if(isEmpty(saveUser)){
+      return next(new HttpError('Saving user failed!'))
+    }
+  } catch (err) {
+    const error = new HttpError(
+      "Adding new user failed, please try again!",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(201).json({ name: newUser.name, email: newUser.email });
+};
+
+const updateUser = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError("Invalid inputs passed, please check your data!", 422)
+    );
+  }
+
+  const { name, email } = req.body;
+
+  const userId = req.params.uid;
 
   let existingUser;
 
   try {
-    existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    const error = new HttpError("Adding new user failed, please try again!", 500);
-    return next(error);
-  }
-
-  if(existingUser){
-      const error = new HttpError('User exists already!', 422);
-      return next(error);
-  }
-
-  const newUser = new User({
-      name, email
-  });
-
-  try{
-      await newUser.save();
-  }catch(err){
-      const error = new HttpError('Saving user failed!', 500);
-      return next(error);
-  }
-
-  res.status(201).json({ name: newUser.name, email: newUser.email })
-};
-
-const updateUser = async (req, res, next) => {
-
-    const { name, email } = req.body;
-
-    const userId = req.params.uid;
-    console.log(userId)
-
-    let existingUser;
-
-    try{
-        existingUser = await User.findById(userId);
-    }catch(err){
-        const error = new HttpError('Something went wrong, could not update then user!', 500);
-        return next(error);
+    existingUser = await User.findById(userId);
+    if (isEmpty(existingUser)) {
+      return next(new HttpError("Can not find the user!", 404));
     }
 
     existingUser.name = name;
     existingUser.email = email;
 
-    try{
-        await existingUser.save();
-    }catch(err){
-        const error = new HttpError('Something went wrong, could not update then user!', 500);
-        return next(error);
+    const existingEmailUser = await User.findOne({ email: email });
+    if(!isEmpty(existingEmailUser) && !existingEmailUser.equals(existingUser)){
+      return next(new HttpError('User with the email exists already!', 422))
     }
 
-    res.status(200).json({ user: existingUser.toObject({ getters: true })})
+    const saveUser = await existingUser.save();
 
-}
+    if(isEmpty(saveUser)){
+      return next(new HttpError('Saving user failed!', 500))
+    }
+
+  } catch (err) {
+    const error = new HttpError(
+      err.message,
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ user: existingUser.toObject({ getters: true }) });
+};
 
 const deleteUser = async (req, res, next) => {
-    const userId = req.params.uid;
+  const userId = req.params.uid;
 
-    let user;
-    try{
-        await User.findByIdAndRemove(userId);
-    }catch(err){
-        const error = new HttpError('Can not delete the user', 500);
-        return next(error);
+  let user;
+  try {
+    const deleteUser = await User.findByIdAndRemove(userId);
+    if(isEmpty(deleteUser)){
+      return next(new HttpError('Can not delete the user', 500));
     }
+  } catch (err) {
+    const error = new HttpError(err.message, 500);
+    return next(error);
+  }
 
-    res.status(200).json('Deleted!')
-}
+  res.status(200).json("Deleted!");
+};
 
 exports.getUser = getUser;
 exports.addNewUser = addNewUser;
