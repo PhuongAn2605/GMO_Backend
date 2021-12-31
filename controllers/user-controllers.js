@@ -49,7 +49,7 @@ const addNewUser = async (req, res, next) => {
 
     const saveUser = await newUser.save();
     if(isEmpty(saveUser)){
-      return next(new HttpError('Saving user failed!'))
+      return next(new HttpError('Saving user failed!', 500))
     }
   } catch (err) {
     const error = new HttpError(
