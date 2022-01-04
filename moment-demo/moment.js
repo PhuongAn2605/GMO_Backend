@@ -1,18 +1,18 @@
 const moment = require('moment');
 
-// const today = moment();
-// console.log(today.format());
+const today = moment();
+console.log(today.format());
 
-// //Date Formatting
-// const today2 = moment().format('YYYY-MM-DD');
-// console.log(today2);
-// console.log(today.format('YYYY'));
+//Date Formatting
+const today2 = moment().format('YYYY-MM-DD');
+console.log(today2);
+console.log(today.format('YYYY'));
 
-// //Date Validation
-// console.log(moment("2021-01-01", "YYYY-MM-DD").isValid()); //true
-// console.log(moment("not-a-date", "YYYY-MM-DD").isValid()); //false
+//Date Validation
+console.log(moment("2021-01-01", "YYYY-MM-DD").isValid()); //true
+console.log(moment("not-a-date", "YYYY-MM-DD").isValid()); //false
 
-// console.log(moment("2021 was a greate year!", "YYYY-MM-DD").isValid()); //true
+console.log(moment("2021 was a greate year!", "YYYY-MM-DD").isValid()); //true
 console.log(moment("2021 was a greate year!", "YYYY-MM-DD", true).isValid()); //false
 
 
