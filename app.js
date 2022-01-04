@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -5,8 +7,9 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/user-routes');
 const HttpError = require('./models/http-error');
 
-const DATABASE_NAME = 'mern';
-const MONGO_URL = `mongodb://localhost:27017/${DATABASE_NAME}`;
+// const DATABASE_NAME = 'mern';
+const MONGO_URL = `mongodb://${process.env.DATABASE_HOST}/${process.env.DATABASE_NAME}`;
+
 
 const app = express();
 
