@@ -35,7 +35,9 @@ const addNewUser = async (req, res, next) => {
   }
 
   const newUser = new User({
-      name, email
+      name,
+      email,
+      places: []
   });
 
   try{
