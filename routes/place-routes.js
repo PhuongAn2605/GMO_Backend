@@ -6,6 +6,10 @@ const fileUpload = require("../middlewares/file-upload");
 
 const router = express.Router();
 
+router.get('/:pid', placesControllers.getPlaceById);
+
+router.get('/user/:uid', placesControllers.getPlaceByUserId);
+
 router.post(
   "/",
   fileUpload.single("image"),
@@ -22,5 +26,7 @@ router.patch(
   [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
   placesControllers.updatePlace
 );
+
+router.delete('/:pid', placesControllers.deletePlace);
 
 module.exports = router;
