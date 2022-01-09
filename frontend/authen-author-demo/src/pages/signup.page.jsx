@@ -6,10 +6,9 @@ import InputForm from "../components/input/Input.component";
 import ButtonForm from "../components/button/Button.comonent";
 import { useHttpCLient } from "../hooks/http-hook";
 import ImageUpload from "../components/input/ImageUpload";
-import { loginAction, setAvatar } from "../redux/auth/auth.actions";
+import { loginAction, setAvatar, setEmailAction } from "../redux/auth/auth.actions";
 
 const SignUp = ({ token, onChange, avatar, login }) => {
-  const { isLoading, error, sendRequest, clearError } = useHttpCLient();
   const navigate = useNavigate();
 
   const nameRef = useRef(null);
@@ -44,7 +43,6 @@ const SignUp = ({ token, onChange, avatar, login }) => {
       const data = await response.json();
       const { userId, token, email } = data; 
 
-      // console.log(userId, token);
       login(userId, token, email);
 
       navigate("/");
@@ -105,7 +103,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  login: (userId, token) => dispatch(loginAction(userId, token)),
+  login: (userId, token, email) => dispatch(loginAction(userId, token, null, email)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

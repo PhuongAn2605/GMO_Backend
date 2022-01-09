@@ -1,4 +1,4 @@
-export const login = (userId, token, expirationDate) => {
+export const login = (userId, token, expirationDate, email) => {
 
     const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000*60*60);
 
@@ -7,7 +7,8 @@ export const login = (userId, token, expirationDate) => {
         JSON.stringify({
             userId,
             token,
-            expiration: tokenExpirationDate.toISOString()
+            expiration: tokenExpirationDate.toISOString(),
+            email
         })
     );
 

@@ -22,7 +22,7 @@ const App = ({ login, logout, token, tokenExpirationDate }) => {
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'));
     if(storedData && storedData.token && new Date(storedData.expiration) > new Date()){
-      login(storedData.userId, storedData.token, new Date(storedData.expiration));
+      login(storedData.userId, storedData.token, new Date(storedData.expiration), storedData.email);
     }
   },[login]);
 
@@ -30,7 +30,7 @@ const App = ({ login, logout, token, tokenExpirationDate }) => {
       <div className="App">
       <Header />
       <Routes>
-        <Route path='/' element={<div>HomePage</div>} />
+        <Route path='/' element={<div>Home Page</div>} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
       </Routes>
@@ -39,7 +39,7 @@ const App = ({ login, logout, token, tokenExpirationDate }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  login: (userId, token, expirationDate) => dispatch(loginAction(userId, token, expirationDate)),
+  login: (userId, token, expirationDate, email) => dispatch(loginAction(userId, token, expirationDate, email)),
   logout: () => dispatch(logoutAction())
 })
 

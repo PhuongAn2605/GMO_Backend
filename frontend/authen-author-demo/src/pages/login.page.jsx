@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InputForm from "../components/input/Input.component";
 import ButtonForm from "../components/button/Button.comonent";
-import { loginAction } from "../redux/auth/auth.actions";
+import { loginAction, setEmailAction } from "../redux/auth/auth.actions";
 import { connect } from "react-redux";
 import { login } from "../redux/auth/auth.utils";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +43,6 @@ const Login = ({ login }) => {
     }catch(err){
       console.log(err);
     }
-
   };
 
   return (
@@ -69,7 +68,7 @@ const Login = ({ login }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  login: (userId, token) => dispatch(loginAction(userId, token))
+  login: (userId, token, email) => dispatch(loginAction(userId, token, null, email)),
 })
 
 export default connect(null, mapDispatchToProps)(Login);

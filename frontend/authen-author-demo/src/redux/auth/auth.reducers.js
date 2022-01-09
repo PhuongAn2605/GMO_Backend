@@ -6,23 +6,26 @@ const INITIAL_STATE = {
   userId: null,
   token: null,
   email: null,
-  avatar: null
+  avatar: null,
 };
 
 const authReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case AuthTypes.SET_EMAIL:
+      return {
+        ...state,
+        email: action.payload,
+      };
 
     case AuthTypes.LOGIN:
-      const { userId, token, email } = action.payload;
+      const { userId, token, expirationDate, email } = action.payload;
       return {
         ...state,
         isLoggedIn: true,
         token: token,
         userId: userId,
-        email: email,
-        tokenExpirationDate: login(userId, token)
+        tokenExpirationDate: login(userId, token, expirationDate, email),
       };
-
 
     case AuthTypes.LOGOUT:
       return {
@@ -30,15 +33,15 @@ const authReducer = (state = INITIAL_STATE, action) => {
         isLoggedIn: false,
         token: null,
         tokenExpirationDate: null,
-        userId: null
+        userId: null,
       };
 
     case AuthTypes.SET_AVATAR:
-      console.log(action.payload)
+      console.log(action.payload);
       return {
         ...state,
-        avatar: action.payload
-      }
+        avatar: action.payload,
+      };
 
     default:
       return state;

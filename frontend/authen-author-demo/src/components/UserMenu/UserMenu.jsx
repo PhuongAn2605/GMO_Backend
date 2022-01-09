@@ -1,4 +1,5 @@
 import * as React from "react";
+import isEmpty from "is-empty";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,10 +16,15 @@ const UserMenu = ({ email, logout }) => {
     setAnchorEl(null);
   };
 
+  if(isEmpty(email)){
+    email = JSON.parse(localStorage.getItem('userData')).email
+  }
+
   const logoutHandler = () => {
     logout();
     localStorage.removeItem("userData");
   };
+
 
   return (
     <React.Fragment>
@@ -30,7 +36,8 @@ const UserMenu = ({ email, logout }) => {
         onClick={handleClick}
         style={{ color: "#eee"}}
       >
-        USER
+        {email}
+        {/* USER */}
       </Button>
       <Menu
         id="basic-menu"

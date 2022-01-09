@@ -68,7 +68,6 @@ const signup = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  console.log(req.body);
   const errors = validationResult(req);
   let isValidPassword = false;
   let token;
@@ -88,6 +87,8 @@ const login = async (req, res, next) => {
         new HttpError("Not found the user, could not log you in!", 403)
       );
     }
+
+    // console.log(existingUser.email)
 
     isValidPassword = await bcrypt.compare(password, existingUser.password);
 
