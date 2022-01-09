@@ -1,22 +1,75 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import InputForm from "../components/input/Input.component";
 import ButtonForm from "../components/button/Button.comonent";
+import { loginAction } from "../redux/auth/auth.actions";
+import { connect } from "react-redux";
+import { login } from "../redux/auth/auth.utils";
+import { useNavigate } from "react-router-dom";
 
+const Login = ({ login }) => {
+  const [emailValue, setEmailValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState("");
 
+  const navigate = useNavigate();
 
-const Login = () => {
+  const changeEmailInputHandler = (e) => {
+    // console.log(e.currentTarget.value)
+    setEmailValue(e.currentTarget.value);
+  };
+  const changePasswordInputHandler = (e) => {
+    setPasswordValue(e.currentTarget.value);
+  };
 
-  const [isFormValid, setIsFormValid ] = useState(false);
-  
+  const loginSubmitHandler = async (event) => {
+    event.preventDefault();
+
+    try{
+      const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: emailValue,
+        password: passwordValue,
+      })
+    });
+
+    const data = await response.json();
+    const { userId, token, email } = data;
+
+    login(userId, token, email);
+    navigate('/');
+    }catch(err){
+      console.log(err);
+    }
+
+  };
+
   return (
-    <form>
-        <InputForm id="email" name="Email" type="email" />
-        <InputForm id="password" name="Password" type="password" />
+    <form onSubmit={loginSubmitHandler}>
+      <InputForm
+        id="email"
+        name="Email"
+        type="email"
+        value={emailValue}
+        onChange={(e) => changeEmailInputHandler(e)}
+      />
+      <InputForm
+        id="password"
+        name="Password"
+        type="password"
+        value={passwordValue}
+        onChange={(e) => changePasswordInputHandler(e)}
+      />
 
-        <ButtonForm title="Login" type="submit" />
+      <ButtonForm title="Login" type="submit" />
     </form>
   );
 };
 
-export default Login;
+const mapDispatchToProps = dispatch => ({
+  login: (userId, token) => dispatch(loginAction(userId, token))
+})
+
+export default connect(null, mapDispatchToProps)(Login);

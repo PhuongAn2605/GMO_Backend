@@ -7,28 +7,6 @@ import { InputStyle } from "./Input.styles";
 import { useHttpCLient } from "../../hooks/http-hook";
 
 const InputForm = (props, ref) => {
-  const [currentUser, setCurrentUser] = useState({
-    name: "",
-    email: "",
-    password: "",
-    image: "",
-  });
-
-  // const [nameValue, setNameValue] = useState("");
-  // const [emailValue, setEmailValue] = useState("");
-  // const [passwordValue, setPasswordValue] = useState("");
-  // const [imagePath, setImagePath] = useState('');
-
-  const changeHandler = (event) => {
-    console.log(event.currentTarget.name);
-    // currentUser[event.currentTarget.name] = event.currentTarget.value;
-    setCurrentUser({
-      ...currentUser,
-      [event.currentTarget.name]: event.currentTarget.value,
-    });
-
-    console.log(currentUser);
-  };
 
   return (
     <InputStyle>
@@ -41,6 +19,7 @@ const InputForm = (props, ref) => {
           inputRef={ref}
           style={props.style}
           onChange={props.onChange}
+          value={props.value}
         />
       </FormControl>
     </InputStyle>

@@ -13,12 +13,12 @@ const DATABASE_NAME = 'mern';
 const MONGO_URL = `mongodb://localhost:27017/${DATABASE_NAME}`;
 
 const app = express();
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 let db;
 let user;
 
-app.use(bodyParser.json());
 app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 app.use((req, res, next) => {

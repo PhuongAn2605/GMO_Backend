@@ -5,75 +5,94 @@ import { useNavigate } from "react-router-dom";
 import InputForm from "../components/input/Input.component";
 import ButtonForm from "../components/button/Button.comonent";
 import { useHttpCLient } from "../hooks/http-hook";
+import ImageUpload from "../components/input/ImageUpload";
+import { loginAction, setAvatar } from "../redux/auth/auth.actions";
 
-const SignUp = ({ token, onChange }) => {
+const SignUp = ({ token, onChange, avatar, login }) => {
   const { isLoading, error, sendRequest, clearError } = useHttpCLient();
   const navigate = useNavigate();
 
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const imageRef = useRef(null);
-
-  // const [nameValue, setNameValue] = useState("");
-  // const [emailValue, setEmailValue] = useState("");
-  // const [passwordValue, setPasswordValue] = useState("");
-  // const [imagePath, setImagePath] = useState('');
+  // const imageRef = useRef(null);
 
   const signupHandler = async (event) => {
-    // console.log(nameRef.current.value)
     event.preventDefault();
+    // console.log(imageRef.current.value)
+    // alert()
     try {
       const formData = new FormData();
       formData.append("name", nameRef.current.value);
       formData.append("email", emailRef.current.value);
       formData.append("password", passwordRef.current.value);
-      formData.append("image", imageRef.current.value);
+      // formData.append("image", avatar);
 
       // console.log(...formData);
+      // console.log('end...')
 
-      await sendRequest("http://localhost:3001/api/signup", "POST", formData, {
-        Authorization: "Bear" + token,
+      // const response = await sendRequest("http://localhost:5000/api/signup", "POST", formData, {
+      //   Authorization: "Bearer" + token,
+      // });
+
+      const response = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        body: formData,
       });
+
+      //response.json returns a promise
+      const data = await response.json();
+      const { userId, token, email } = data; 
+
+      // console.log(userId, token);
+      login(userId, token, email);
+
       navigate("/");
     } catch (err) {}
   };
 
-
   return (
-    <form className="sign-up" onSubmit={signupHandler} encType="multipart/form-data">
+    <form
+      className="sign-up"
+      onSubmit={signupHandler}
+      encType="multipart/form-data"
+    >
       <InputForm
         id="name"
         name="Name"
         type="text"
         ref={nameRef}
-        onChange={e => nameRef.current.value = e.currentTarget.value}
+        onChange={(e) => (nameRef.current.value = e.currentTarget.value)}
       />
       <InputForm
         id="email"
         name="Email"
         type="email"
         ref={emailRef}
-        onChange={e => emailRef.current.value = e.currentTarget.value}
-
+        onChange={(e) => (emailRef.current.value = e.currentTarget.value)}
       />
       <InputForm
         id="password"
         name="Password"
         type="password"
         ref={passwordRef}
-        onChange={e => passwordRef.current.value = e.currentTarget.value}
-
+        onChange={(e) => (passwordRef.current.value = e.currentTarget.value)}
       />
 
-      <InputForm
+      {/* <ImageUpload 
+        id="image"
+        center="center"
+      /> */}
+
+      {/* <InputForm
         id="image"
         name="Avatar"
         type="file"
-        accept=".jpg,.png,.jpeg"
+        // accept=".jpg,.png,.jpeg"
         ref={imageRef}
-        // onChange={e => imageRef.current.value = e.currentTarget.value}
-      />
+        // onChange={e => console.log(e.currentTarget)}
+
+      /> */}
 
       <ButtonForm title="Sign Up" type="submit" />
     </form>
@@ -81,7 +100,12 @@ const SignUp = ({ token, onChange }) => {
 };
 
 const mapStateToProps = (state) => ({
-  token: state.auth.token
+  token: state.auth.token,
+  avatar: state.auth.avatar,
 });
 
-export default connect(mapStateToProps)(SignUp);
+const mapDispatchToProps = (dispatch) => ({
+  login: (userId, token) => dispatch(loginAction(userId, token)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -20,6 +20,9 @@ export const LeftHeaderItem = styled.div`
 export const RightHeaderItem = styled.div`
   margin-right: 1rem;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   a{
   text-decoration: none;

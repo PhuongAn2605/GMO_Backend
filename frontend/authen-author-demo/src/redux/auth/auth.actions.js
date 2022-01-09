@@ -1,8 +1,12 @@
 import AuthTypes from "./auth.types";
 
-export const loginAction = (userInfo) => ({
+export const loginAction = (userId, token, email) => ({
     type: AuthTypes.LOGIN,
-    payload: userInfo
+    payload: {
+        userId,
+        token,
+        email
+    }
 });
 
 export const signupAction = (userInfo) => ({
@@ -12,4 +16,9 @@ export const signupAction = (userInfo) => ({
 
 export const logoutAction = () => ({
     type: AuthTypes.LOGOUT
-})
+});
+
+export const setAvatar = (avatar) => ({
+    type: AuthTypes.SET_AVATAR,
+    payload: avatar
+});

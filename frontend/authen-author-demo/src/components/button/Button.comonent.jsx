@@ -13,6 +13,7 @@ const ButtonForm = (props) => {
         type={props.type}
         onClick={props.onClick}
         disabled={props.disabled}
+        color={props.color ? props.color : "primary"}
       >
         {props.title}
       </Button>

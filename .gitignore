@@ -1,0 +1,4 @@
+# dependencies
+/node_modules
+/frontend/authen-author-demo/node_modules
+/backend/node_modules

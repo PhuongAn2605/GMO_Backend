@@ -13,7 +13,6 @@ fileUpload.single('image'),
     check('email').normalizeEmail().isEmail(),
     check('password').isLength({ min: 6 }),
 ]
-
 ,authenControllers.signup);
 
 router.post('/login', authenControllers.login);
